@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Final
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.1.
@@ -57,3 +58,7 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+=======
+# POC
+Resource/Employee Tracking Application
+>>>>>>> 2af6ae6c876bbcd427a950b867ee62cd620be4ca
