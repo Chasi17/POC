@@ -1,0 +1,223 @@
+<form [formGroup]="userform" (ngSubmit)="onSubmit()" class="form-container">
+
+  <div class="form-columns">
+    <!-- Left Column -->
+    <div class="form-column form-left">
+      <!-- Name -->
+      <div class="form-group">
+        <label for="name">Name <span class="required">*</span></label>
+        <input type="text" id="name" formControlName="name" />
+        <div class="error" *ngIf="name.invalid && (name.dirty || name.touched)">
+          <span *ngIf="name.hasError('required')">Name is required.</span>
+          <span *ngIf="name.hasError('minlength')">At least 4 characters required.</span>
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email">Email <span class="required">*</span></label>
+        <input type="email" id="email" formControlName="email" />
+        <div class="error" *ngIf="email.invalid && (email.dirty || email.touched)">
+          <span *ngIf="email.hasError('required')">Email is required.</span>
+          <span *ngIf="email.hasError('email')">Invalid email format.</span>
+        </div>
+      </div>
+
+      <!-- Designation -->
+
+
+      <div class="form-group">
+        <label for="designation">Designation <span class="required">*</span></label>
+
+        <select formControlName="designation">
+          <option *ngFor="let des of designations" [value]="des">{{ des }}</option>
+        </select>
+
+        <!-- <input type="text" id="designation" formControlName="designation" /> -->
+        <!-- <div class="error" *ngIf="userform.get('designation')?.invalid && (userform.get('designation')?.touched || userform.get('designation')?.dirty)">
+          <span *ngIf="userform.get('designation')?.hasError('required')">Designation is required.</span>
+        </div> -->
+      </div>
+
+      <!-- Reporting To -->
+
+      <!-- <div class="form-group">
+        <label for="reportingTo">Reporting To <span class="required">*</span></label>
+
+        <select formControlName="reportingTo" multiple>
+          <option *ngFor="let m of managers" [value]="m">{{ m }}</option>
+        </select> -->
+      <!-- <input type="text" id="reportingTo" formControlName="reportingTo" />
+        <div class="error" *ngIf="userform.get('reportingTo')?.invalid && (userform.get('reportingTo')?.touched || userform.get('reportingTo')?.dirty)">
+          <span *ngIf="userform.get('reportingTo')?.hasError('required')">Reporting To is required.</span>
+        </div> -->
+      <!-- </div> -->
+
+      <div class="form-group custom-multiselect">
+        <label for="reportingTo">Reporting To <span class="required">*</span></label>
+
+        <div class="dropdown-input" (click)="showManagerDropdown = !showManagerDropdown" tabindex="0">
+          <div class="selected-values">
+            {{ selectedManagers.length ? selectedManagers.join(', ') : 'Select managers' }}
+          </div>
+          <div class="arrow">&#9662;</div>
+        </div>
+
+        <div class="dropdown-list" *ngIf="showManagerDropdown">
+          <div *ngFor="let m of managers" class="dropdown-option">
+            <label>
+              <input type="checkbox" [value]="m" (change)="onManagerChange($event)"
+                [checked]="selectedManagers.includes(m)" />
+              {{ m }}
+            </label>
+          </div>
+        </div>
+
+        <div class="error"
+          *ngIf="userform.get('reportingTo')?.invalid && (userform.get('reportingTo')?.touched || userform.get('reportingTo')?.dirty)">
+          <span *ngIf="userform.get('reportingTo')?.hasError('required')">Reporting To is required.</span>
+        </div>
+      </div>
+
+
+      <!-- Billable -->
+      <div class="form-group">
+        <label for="billable">Billable <span class="required">*</span></label>
+        <select id="billable" formControlName="billable">
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+        <div class="error"
+          *ngIf="userform.get('billable')?.invalid && (userform.get('billable')?.touched || userform.get('billable')?.dirty)">
+          <span *ngIf="userform.get('billable')?.hasError('required')">Billable selection is required.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="form-column form-right">
+      <!-- Skill -->
+
+      <!-- <div class="form-group skill-group-input">
+        <label for="skill">Skill <span class="required">*</span></label>
+        <select formControlName="skill" multiple size="5">
+          <option *ngFor="let s of skills" [value]="s">{{ s }}</option>
+        </select> -->
+
+
+      <!-- <input type="text" id="skill" formControlName="skill" />
+        <div class="error" *ngIf="userform.get('skill')?.invalid && (userform.get('skill')?.touched || userform.get('skill')?.dirty)">
+          <span *ngIf="userform.get('skill')?.hasError('required')">Skill is required.</span>
+        </div> -->
+
+      <!-- </div> -->
+      <!-- Custom Skill Multi-Select -->
+      <div class="form-group custom-multiselect">
+        <label for="skill">Skill <span class="required">*</span></label>
+
+        <!-- Visible input-like dropdown trigger -->
+        <div class="dropdown-input" (click)="toggleDropdown()" tabindex="0">
+          <div class="selected-values">
+            {{ selectedSkills.length ? selectedSkills.join(', ') : 'Select skills' }}
+          </div>
+          <div class="arrow">&#9662;</div>
+        </div>
+
+        <!-- Custom dropdown list with checkboxes -->
+        <div class="dropdown-list" *ngIf="showDropdown">
+          <div *ngFor="let s of skills" class="dropdown-option">
+            <label>
+              <input type="checkbox" [value]="s" (change)="onSkillChange($event)"
+                [checked]="selectedSkills.includes(s)" />
+              {{ s }}
+            </label>
+          </div>
+        </div>
+
+        <!-- Optional validation error -->
+        <div class="error"
+          *ngIf="userform.get('skill')?.invalid && (userform.get('skill')?.touched || userform.get('skill')?.dirty)">
+          <span *ngIf="userform.get('skill')?.hasError('required')">Skill is required.</span>
+        </div>
+      </div>
+
+
+      <!-- Project -->
+
+      <!-- <div class="form-group">
+        <label for="project">Project <span class="required">*</span></label>
+        <select formControlName="project" multiple>
+          <option *ngFor="let p of projects" [value]="p">{{ p }}</option>
+        </select> -->
+      <!-- <input type="text" id="project" formControlName="project" />
+        <div class="error" *ngIf="userform.get('project')?.invalid && (userform.get('project')?.touched || userform.get('project')?.dirty)">
+          <span *ngIf="userform.get('project')?.hasError('required')">Project is required.</span>
+        </div> -->
+      <!-- </div> -->
+
+      <div class="form-group custom-multiselect">
+        <label for="project">Project <span class="required">*</span></label>
+
+        <div class="dropdown-input" (click)="showProjectDropdown = !showProjectDropdown" tabindex="0">
+          <div class="selected-values">
+            {{ selectedProjects.length ? selectedProjects.join(', ') : 'Select projects' }}
+          </div>
+          <div class="arrow">&#9662;</div>
+        </div>
+
+        <div class="dropdown-list" *ngIf="showProjectDropdown">
+          <div *ngFor="let p of projects" class="dropdown-option">
+            <label>
+              <input type="checkbox" [value]="p" (change)="onProjectChange($event)"
+                [checked]="selectedProjects.includes(p)" />
+              {{ p }}
+            </label>
+          </div>
+        </div>
+
+        <div class="error"
+          *ngIf="userform.get('project')?.invalid && (userform.get('project')?.touched || userform.get('project')?.dirty)">
+          <span *ngIf="userform.get('project')?.hasError('required')">Project is required.</span>
+        </div>
+      </div>
+
+
+
+      <!-- Location -->
+
+      <div class="form-group">
+        <label for="location">Location <span class="required">*</span></label>
+        <select formControlName="location">
+          <option *ngFor="let l of locations" [value]="l">{{ l }}</option>
+        </select>
+        <!-- <input type="text" id="location" formControlName="location" />
+        <div class="error" *ngIf="userform.get('location')?.invalid && (userform.get('location')?.touched || userform.get('location')?.dirty)">
+          <span *ngIf="userform.get('location')?.hasError('required')">Location is required.</span>
+        </div> -->
+      </div>
+
+      <!-- DOJ -->
+      <div class="form-group">
+        <label for="doj">Date of Joining <span class="required">*</span></label>
+        <input type="date" id="doj" formControlName="doj" />
+        <div class="error"
+          *ngIf="userform.get('doj')?.invalid && (userform.get('doj')?.touched || userform.get('doj')?.dirty)">
+          <span *ngIf="userform.get('doj')?.hasError('required')">Date of Joining is required.</span>
+        </div>
+      </div>
+
+      <!-- Remarks -->
+      <div class="form-group">
+        <label for="remarks">Remarks</label>
+        <textarea id="remarks" formControlName="remarks" rows="3"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button type="submit" [disabled]="userform.invalid" class="submit-btn" [ngClass]="isEditMode ? 'update' : 'add'">
+      {{ isEditMode ? 'Update' : 'Add' }}
+    </button>
+    <button type="button" (click)="onResetClick()" class="reset-btn">Reset</button>
+  </div>
+</form>

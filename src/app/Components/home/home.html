@@ -1,0 +1,60 @@
+<div class="landing-intro">
+  <h1>Welcome to the Resource Tracking Application</h1>
+  <p>
+    This application helps you efficiently manage and track employee resources within your organization. 
+  </p>
+</div>
+
+
+<div class="Kendo-grid-container">
+  <kendo-grid [kendoGridBinding]="userList" [skip]="0" [pageSize]="gridState.take!" [pageable]="true" [sortable]="true"
+    [filterable]="true" (dataStateChange)="onDataStateChange($event)" [selectable]="{
+    mode: 'multiple',
+    metaKeyMultiSelect: requireSelectOrCtrlKeys
+  }" [selectedKeys]="selectedKeys" (selectionChange)="onSelectionChange($event)" kendoGridSelectBy="empId">
+    >
+
+    <kendo-toolbar overflow="scroll">
+      <kendo-toolbar-button kendoGridFilterTool></kendo-toolbar-button>
+      <kendo-toolbar-button kendoGridSortTool></kendo-toolbar-button>
+      <kendo-toolbar-button kendoGridGroupTool></kendo-toolbar-button>
+      <kendo-toolbar-separator></kendo-toolbar-separator>
+      <kendo-toolbar-button kendoGridColumnChooserTool></kendo-toolbar-button>
+      <kendo-toolbar-spacer></kendo-toolbar-spacer>
+      <kendo-toolbar-button id="Delete-btn" [text]="'Delete'" (click)="onDeleteMultiple()"></kendo-toolbar-button>
+    </kendo-toolbar>
+
+    <kendo-grid-checkbox-column [showSelectAll]="true" [width]="25"></kendo-grid-checkbox-column>
+
+    <kendo-grid-column field="empId" title="EMP ID" [width]="70">
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <span class="empId-cell">{{ dataItem.empId }}</span>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column field="name" title="Name" [width]="150"></kendo-grid-column>
+    <kendo-grid-column field="designation" title="Role" [width]="140"></kendo-grid-column>
+    <kendo-grid-column field="project" title="Project" [width]="180"></kendo-grid-column>
+
+      <!-- Hidden by default, available in Column Chooser -->
+  <kendo-grid-column field="email" title="Email" [width]="180" [hidden]="true"></kendo-grid-column>
+  <kendo-grid-column field="reportingTo" title="Reporting To" [width]="150" [hidden]="true"></kendo-grid-column>
+  <kendo-grid-column field="billable" title="Billable" [width]="100" [hidden]="true"></kendo-grid-column>
+  <kendo-grid-column field="skill" title="Skill" [width]="130" [hidden]="true"></kendo-grid-column>
+  <kendo-grid-column field="location" title="Location" [width]="130" [hidden]="true"></kendo-grid-column>
+  <kendo-grid-column field="doj" title="Date of Joining" [width]="140" [hidden]="true">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      {{ dataItem.doj | date: 'yyyy-MM-dd' }}
+    </ng-template>
+  </kendo-grid-column>
+  <kendo-grid-column field="remarks" title="Remarks" [width]="200" [hidden]="true"></kendo-grid-column>
+
+    <kendo-grid-column title="Actions" [width]="150">
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <button class="action-btn edit" (click)="onEdit(dataItem)" title="Edit">✏️</button>
+        <button class="action-btn details" (click)="onMore(dataItem)" title="Details">👁️</button>
+        <button class="action-btn delete" (click)="onDel(dataItem.empId!)" title="Delete">🗑️</button>
+      </ng-template>
+    </kendo-grid-column>
+  </kendo-grid>
+</div>

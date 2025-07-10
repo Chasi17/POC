@@ -1,0 +1,59 @@
+<div class="details-container" *ngIf="user">
+  <h2>Employee Details</h2>
+  
+  <div class="details-row">
+    <span class="label">ID:</span>
+    <span class="value">{{ user.empId }}</span>
+  </div>
+
+  <div class="details-row">
+    <span class="label">Name:</span>
+    <span class="value">{{ user.name }}</span>
+  </div>
+
+  <div class="details-row">
+    <span class="label">Email:</span>
+    <span class="value">{{ user.email }}</span>
+  </div>
+
+  <div class="details-row" *ngIf="user.designation">
+    <span class="label">Designation:</span>
+    <span class="value">{{ user.designation }}</span>
+  </div>
+
+  <div class="details-row" *ngIf="user.billable">
+    <span class="label">Billable:</span>
+    <span class="value">{{ user.billable }}</span>
+  </div>
+
+  <div class="details-row" *ngIf="user.project">
+    <span class="label">Project:</span>
+    <span class="value">{{ user.project }}</span>
+  </div>
+
+  <div class="details-row" *ngIf="user.reportingTo">
+    <span class="label">reportingTo</span>
+    <span class="value">{{ user.reportingTo }}</span>
+  </div>
+
+  <div class="details-row" *ngIf="user.skill">
+    <span class="label">Skill:</span>
+    <span class="value">{{ user.skill }}</span>
+  </div>
+
+  <div class="details-row" *ngIf="user.location">
+    <span class="label">Location:</span>
+    <span class="value">{{ user.location }}</span>
+  </div>
+
+  <div class="details-row" *ngIf="user.doj">
+    <span class="label">DOJ:</span>
+    <span class="value">{{ user.doj }}</span>
+  </div>
+
+  <div class="details-row" *ngIf="user.remarks">
+    <span class="label">Remarks:</span>
+    <span class="value">{{ user.remarks }}</span>
+  </div>
+</div>
+

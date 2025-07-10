@@ -1,0 +1,92 @@
+// Header styling
+.app-header {
+  background-color: #1e3a8a; // deep navy blue
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+// Tab navigation container
+.nav-tabs-container {
+  display: flex;
+  justify-content: center;
+  background-color: #f0f4f8;
+  margin-bottom: 0; // remove extra spacing after tabs
+  padding: 0.5rem 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+
+.nav-tabs {
+  list-style: none;
+  display: flex;
+  gap: 16px;
+  padding: 0;
+  margin: 0;
+  border-bottom: 2px solid #ccc;
+}
+
+.nav-tabs li {
+  display: inline;
+}
+
+.nav-tabs a {
+  text-decoration: none;
+  padding: 10px 15px;
+  display: inline-block;
+  color: #333;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.3s, color 0.3s;
+}
+
+.nav-tabs a.active {
+  border-bottom: 2px solid #007bff;
+  color: #007bff;
+}
+
+
+.toolbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 20px;
+  flex-wrap: wrap;
+
+  .toolbar {
+    display: flex;
+    gap: 10px;
+
+    input[type="text"] {
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    select {
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+  }
+
+  .export-btn {
+    button {
+      padding: 6px 15px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #0056b3;
+      }
+    }
+  }
+}
+
+
+

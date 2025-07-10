@@ -1,0 +1,29 @@
+<header class="app-header" style="position: relative;">
+  <div class="brand-title">Resource Tracking Application</div>
+  <div style="position: absolute; top: 10px; right: 20px;">
+    <button class="export-csv-btn" (click)="exportCSV()">⬇ Export CSV</button>
+  </div>
+</header>
+
+<nav class="nav-tabs-container">
+  <ul class="nav-tabs">
+    <li><a routerLink="/Home" routerLinkActive="active">Home</a></li>
+    <li>
+  <a 
+    [routerLink]="selectedEmployeeId ? ['/Edit', selectedEmployeeId] : ['/Edit']" 
+    routerLinkActive="active">
+    Form
+  </a>
+</li>
+
+    <li *ngIf="isAnyEmployeeSelected"><a routerLink="/Details" routerLinkActive="active">Details</a></li>
+  </ul>
+</nav>
+
+
+<router-outlet></router-outlet>
+
+
+
+
+
