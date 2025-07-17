@@ -12,6 +12,7 @@ import { KENDO_TOOLBAR } from "@progress/kendo-angular-toolbar";
 import { ExcelExportData } from "@progress/kendo-angular-excel-export";
 import { ExportServices } from '../../Services/export-services';
 import { GridModule } from '@progress/kendo-angular-grid';
+import { DialogModule } from '@progress/kendo-angular-dialog';
 
 
 @Component({
@@ -20,6 +21,7 @@ import { GridModule } from '@progress/kendo-angular-grid';
   imports: [CommonModule,
     FormsModule,
     GridModule,
+    DialogModule,
     KENDO_GRID_EXCEL_EXPORT,
     KENDO_GRID_PDF_EXPORT,
     KENDO_GRID,
@@ -31,6 +33,17 @@ import { GridModule } from '@progress/kendo-angular-grid';
   styleUrl: './home.scss'
 })
 export class Home implements OnInit {
+
+showBulkEditModal: boolean = false;
+bulkEditData: any = {
+  designation: '',
+  location: '',
+  billable: ''
+};
+
+designations: string[] = [];
+locations: string[] = [];
+
 
   gridData: { data: Employee[], total: number } = {
     data: [],
@@ -151,5 +164,61 @@ export class Home implements OnInit {
   this.empService.setSelectedEmployee(null); // Clear context
 }
 
+loadInitialData() {
+  this.empService.getDesignations().subscribe(d => this.designations = d);
+  this.empService.getLocations().subscribe(l => this.locations = l);
+}
 
+onBulkEdit() {
+  this.bulkEditData = {
+    designation: '',
+    location: '',
+    billable: ''
+  };
+  this.showBulkEditModal = true;
+}
+
+closeBulkEditModal() {
+  this.showBulkEditModal = false;
+}
+
+
+onBulkEditSubmit() {
+  const payload = {
+    designation: this.bulkEditData.designation,
+    location: this.bulkEditData.location,
+    billable: this.bulkEditData.billable === 'yes'
+  };
+
+  const updateObservables = this.selectedKeys.map((empId: number) => {
+    const employee = this.userList.find(u => u.empId === empId);
+    
+  if (!employee) {
+    throw new Error(`Employee with ID ${empId} not found`);
+  }
+
+  // Ensure required fields are present
+  if (!employee.name || !employee.email || employee.billable === undefined) {
+    throw new Error(`Missing required fields for employee ${empId}`);
+  }
+
+  const updated = { ...employee, ...payload };
+    return this.empService.update(empId, updated);
+  });
+
+  // Execute all updates in parallel
+  Promise.all(updateObservables.map((obs: any) => obs.toPromise()))
+    .then(() => {
+      alert("Bulk update successful");
+      this.showBulkEditModal = false;
+      this.empService.getAll().subscribe((list: any) => {
+        this.userList = list;
+        this.loadGridData();
+      });
+    })
+    .catch(error => {
+      console.error("Bulk update failed", error);
+      alert("Bulk update failed. Please try again.");
+    });
+}
 }

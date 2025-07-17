@@ -19,6 +19,7 @@
     "@angular/router": "^20.0.0",
     "@progress/kendo-angular-common": "^19.1.1",
     "@progress/kendo-angular-dateinputs": "^19.1.1",
+    "@progress/kendo-angular-dialog": "^19.1.1",
     "@progress/kendo-angular-dropdowns": "^19.1.1",
     "@progress/kendo-angular-grid": "^19.1.1",
     "@progress/kendo-angular-inputs": "^19.1.1",

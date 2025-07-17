@@ -22,6 +22,7 @@
       <kendo-toolbar-button kendoGridColumnChooserTool></kendo-toolbar-button>
       <kendo-toolbar-spacer></kendo-toolbar-spacer>
       <kendo-toolbar-button id="Delete-btn" [text]="'Delete'" (click)="onDeleteMultiple()"></kendo-toolbar-button>
+      <kendo-toolbar-button [text]="'Bulk Edit'" (click)="onBulkEdit()" [disabled]="!selectedKeys.length"></kendo-toolbar-button>
     </kendo-toolbar>
 
     <kendo-grid-checkbox-column [showSelectAll]="true" [width]="25"></kendo-grid-checkbox-column>
@@ -58,3 +59,31 @@
     </kendo-grid-column>
   </kendo-grid>
 </div>
+
+<kendo-dialog *ngIf="showBulkEditModal" title="Bulk Edit Employees" (close)="closeBulkEditModal()">
+  <form (ngSubmit)="onBulkEditSubmit()" #bulkEditForm="ngForm">
+    <label>Designation:
+      <select [(ngModel)]="bulkEditData.designation" name="designation">
+        <option *ngFor="let des of designations" [value]="des">{{ des }}</option>
+      </select>
+    </label>
+
+    <label>Location:
+      <select [(ngModel)]="bulkEditData.location" name="location">
+        <option *ngFor="let loc of locations" [value]="loc">{{ loc }}</option>
+      </select>
+    </label>
+
+    <label>Billable:
+      <select [(ngModel)]="bulkEditData.billable" name="billable">
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+    </label>
+
+    <div class="dialog-actions">
+      <button kendoButton type="submit">Apply Changes</button>
+      <button kendoButton (click)="closeBulkEditModal()">Cancel</button>
+    </div>
+  </form>
+</kendo-dialog>
