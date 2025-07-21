@@ -55,20 +55,6 @@ export class Form {
 
     this.loadDropdowns();
 
-    // this.empservices.getSelectedEmployee().subscribe((emp: Employee | null) => {
-    //     console.log("Selected Employee", emp);
-    // });
-
-    // this.selectedEmpID = parseInt(this.route.snapshot.paramMap.get('empId')!!);
-    // console.log("selectedEmpID", this.selectedEmpID);
-
-    // if (!this.selectedEmpID) {
-    //   this.empservices.setSelectedEmployee(null); // ✅ Clear previous selection
-    //   this.initForm(); // Reset the form
-    // }
-
-  
-
 
     this.initForm();
 

@@ -5,7 +5,7 @@ import { Employee } from '../../Interface/Interface';
 import { MyServices } from '../../Services/my-services';
 import { Router } from '@angular/router';
 import { process, State } from '@progress/kendo-data-query';
-import { FormsModule } from '@angular/forms';
+import { FormsModule,FormGroup,FormBuilder,ReactiveFormsModule} from '@angular/forms';
 import { KENDO_LABELS } from '@progress/kendo-angular-label';
 import { KENDO_INPUTS } from '@progress/kendo-angular-inputs';
 import { KENDO_TOOLBAR } from "@progress/kendo-angular-toolbar";
@@ -14,6 +14,8 @@ import { ExportServices } from '../../Services/export-services';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { DialogModule } from '@progress/kendo-angular-dialog';
 import * as XLSX from 'xlsx';
+import { MultiSelectModule } from '@progress/kendo-angular-dropdowns';
+
 
 @Component({
   selector: 'app-home',
@@ -28,21 +30,23 @@ import * as XLSX from 'xlsx';
     KENDO_TOOLBAR,
     KENDO_LABELS,
     KENDO_INPUTS,
+    MultiSelectModule,
+    ReactiveFormsModule,
   ],
   templateUrl: './home.html',
   styleUrl: './home.scss'
 })
 export class Home implements OnInit {
 
+bulkEditForm!: FormGroup;
+
 showBulkEditModal: boolean = false;
-bulkEditData: any = {
-  designation: '',
-  location: '',
-  billable: ''
-};
 
 designations: string[] = [];
 locations: string[] = [];
+skills: string[] = [];
+projects: string[] = [];
+managers: string[] = [];
 
 
   gridData: { data: Employee[], total: number } = {
@@ -64,7 +68,7 @@ locations: string[] = [];
   };
 
   userList: Employee[] = [];
-  constructor(private empService: MyServices, private router: Router, private exportService: ExportServices) { }
+  constructor(private fb : FormBuilder , private empService: MyServices, private router: Router, private exportService: ExportServices) { }
   ngOnInit() {
     this.empService.getAll().subscribe((list: any) => {
       console.log(list);
@@ -72,6 +76,31 @@ locations: string[] = [];
       this.exportService.setEmployees(this.userList);
       this.loadGridData();
     });
+
+    this.bulkEditForm = this.fb.group({
+      designation: [''],
+      location: [''],
+      billable: [''],
+      skill: [[]],        // multiselect
+      project: [[]],
+      ReportingTo: [[]],
+      doj: [''],
+      remarks: ['']
+    });
+
+    this.loadInitialData();
+
+  }
+
+onBulkEdit() {
+  this.bulkEditForm.reset();
+  this.loadInitialData();
+  this.showBulkEditModal = true;
+}
+
+
+  closeBulkEditModal() {
+    this.showBulkEditModal = false;
   }
 
   loadGridData() {
@@ -79,8 +108,6 @@ locations: string[] = [];
     this.gridData.data = processed.data;
     this.gridData.total = processed.total;
   }
-
-
 
   onDataStateChange(state: State): void {
     this.gridState = state;
@@ -156,58 +183,58 @@ locations: string[] = [];
 loadInitialData() {
   this.empService.getDesignations().subscribe(d => this.designations = d);
   this.empService.getLocations().subscribe(l => this.locations = l);
-}
-
-onBulkEdit() {
-  this.bulkEditData = {
-    designation: '',
-    location: '',
-    billable: ''
-  };
-  this.showBulkEditModal = true;
-}
-
-closeBulkEditModal() {
-  this.showBulkEditModal = false;
+  this.empService.getSkills().subscribe(s => this.skills = s); // ✅ Ensure API exists
+  this.empService.getProjects().subscribe(p => this.projects = p);
+  this.empService.getManagers().subscribe(m => this.managers = m);
 }
 
 
 onBulkEditSubmit() {
-  const payload = {
-    designation: this.bulkEditData.designation,
-    location: this.bulkEditData.location,
-    billable: this.bulkEditData.billable === 'yes'
+  const formData = this.bulkEditForm.value;
+
+  const payload : any= {
+    designation: formData.designation,
+    location: formData.location,
+    billable: formData.billable === 'yes',
+    skill: (formData.skill || []).join(','),
+    project: (formData.project || []).join(','),
+    ReportingTo: (formData.ReportingTo || []).join(','),
+    doj: formData.doj !== '' ? new Date(formData.doj).toISOString().split('T')[0] : null,
+    remarks: formData.remarks
   };
+  
 
   const updateObservables = this.selectedKeys.map((empId: number) => {
-    const employee = this.userList.find(u => u.empId === empId);
+    const employee: any = this.userList.find(u => u.empId === empId);
+    if (!employee) return;
+
+    const updated: any = {
+      ...employee,
+      ...payload,
+      empId: empId // explicitly set to match backend expectations
+    };
+
+    for(const key in payload) {
+      if (payload[key] === '' || payload[key] === null || payload[key] === undefined) {
+        updated[key] = employee[key]; // Remove keys with empty values
+      }
+    }
     
-  if (!employee) {
-    throw new Error(`Employee with ID ${empId} not found`);
-  }
-
-  // Ensure required fields are present
-  if (!employee.name || !employee.email || employee.billable === undefined) {
-    throw new Error(`Missing required fields for employee ${empId}`);
-  }
-
-  const updated = { ...employee, ...payload };
     return this.empService.update(empId, updated);
-  });
+  }).filter(Boolean); // remove undefined
 
-  // Execute all updates in parallel
-  Promise.all(updateObservables.map((obs: any) => obs.toPromise()))
+  Promise.all(updateObservables.map((obs:any) => obs.toPromise()))
     .then(() => {
-      alert("Bulk update successful");
-      this.showBulkEditModal = false;
+      alert('Bulk update successful');
+      this.closeBulkEditModal();
       this.empService.getAll().subscribe((list: any) => {
         this.userList = list;
         this.loadGridData();
       });
     })
     .catch(error => {
-      console.error("Bulk update failed", error);
-      alert("Bulk update failed. Please try again.");
+      console.error('Bulk update failed', error);
+      alert('Bulk update failed. Please try again.');
     });
 }
 

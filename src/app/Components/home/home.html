@@ -61,29 +61,57 @@
 </div>
 
 <kendo-dialog *ngIf="showBulkEditModal" title="Bulk Edit Employees" (close)="closeBulkEditModal()">
-  <form (ngSubmit)="onBulkEditSubmit()" #bulkEditForm="ngForm">
+  <form [formGroup]="bulkEditForm" (ngSubmit)="onBulkEditSubmit()">
+
     <label>Designation:
-      <select [(ngModel)]="bulkEditData.designation" name="designation">
+      <select formControlName="designation">
+        <option value="">-- Select --</option>
         <option *ngFor="let des of designations" [value]="des">{{ des }}</option>
       </select>
     </label>
 
     <label>Location:
-      <select [(ngModel)]="bulkEditData.location" name="location">
+      <select formControlName="location">
+        <option value="">-- Select --</option>
         <option *ngFor="let loc of locations" [value]="loc">{{ loc }}</option>
       </select>
     </label>
 
     <label>Billable:
-      <select [(ngModel)]="bulkEditData.billable" name="billable">
+      <select formControlName="billable">
+        <option value="">-- Select --</option>
         <option value="yes">Yes</option>
         <option value="no">No</option>
       </select>
     </label>
 
+    <!-- You can add the rest of the form fields (skills, project, etc.) here -->
+
+    <label>Skills:
+  <kendo-multiselect formControlName="skill" [data]="skills" [valuePrimitive]="true"></kendo-multiselect>
+</label>
+
+<label>Projects:
+  <kendo-multiselect formControlName="project" [data]="projects" [valuePrimitive]="true"></kendo-multiselect>
+</label>
+
+<label>Managers:
+  <kendo-multiselect formControlName="ReportingTo" [data]="managers" [valuePrimitive]="true"></kendo-multiselect>
+</label>
+
+<label>Remarks:
+  <textarea formControlName="remarks"></textarea>
+</label>
+
+<label>Date of Joining:
+  <input type="date" formControlName="doj" />
+</label>
+
+
     <div class="dialog-actions">
       <button kendoButton type="submit">Apply Changes</button>
-      <button kendoButton (click)="closeBulkEditModal()">Cancel</button>
+      <button kendoButton type="button" (click)="closeBulkEditModal()">Cancel</button>
     </div>
+
   </form>
 </kendo-dialog>
