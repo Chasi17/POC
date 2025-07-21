@@ -1,3 +1,25 @@
+kendo-toolbar {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 10px;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.import-btn {
+  font-weight: 500;
+  font-size: 14px;
+  white-space: nowrap;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+
+  &:hover {
+    color: #1976d2;
+  }
+}
+
 kendo-grid {
   max-width: 100%;
   overflow-x: auto;

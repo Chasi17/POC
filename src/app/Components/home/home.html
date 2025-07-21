@@ -12,7 +12,6 @@
     mode: 'multiple',
     metaKeyMultiSelect: requireSelectOrCtrlKeys
   }" [selectedKeys]="selectedKeys" (selectionChange)="onSelectionChange($event)" kendoGridSelectBy="empId">
-    >
 
     <kendo-toolbar overflow="scroll">
       <kendo-toolbar-button kendoGridFilterTool></kendo-toolbar-button>
@@ -23,6 +22,7 @@
       <kendo-toolbar-spacer></kendo-toolbar-spacer>
       <kendo-toolbar-button id="Delete-btn" [text]="'Delete'" (click)="onDeleteMultiple()"></kendo-toolbar-button>
       <kendo-toolbar-button [text]="'Bulk Edit'" (click)="onBulkEdit()" [disabled]="!selectedKeys.length"></kendo-toolbar-button>
+      <kendo-toolbar-button class="import-btn" (click)="onImportExcel()" [text]="'Import Excel'"></kendo-toolbar-button>
     </kendo-toolbar>
 
     <kendo-grid-checkbox-column [showSelectAll]="true" [width]="25"></kendo-grid-checkbox-column>

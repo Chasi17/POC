@@ -128,6 +128,7 @@ export class Form {
     this.empservices.getDesignations().subscribe({
       next: (data) => {
         this.designations = data;
+        console.log("DESIGNATIONS", data);
       },
       error: (err) => {
         console.error('Error fetching designations', err);
@@ -137,6 +138,8 @@ export class Form {
     this.empservices.getLocations().subscribe({
       next: (data) => {
         this.locations = data;
+        console.log("LOCATIONS", data);
+        
       },
       error: (err) => {
         console.error('Error fetching locations', err);
@@ -157,6 +160,8 @@ export class Form {
     this.empservices.getProjects().subscribe({
       next: (data) => {
         this.projects = data;
+        console.log("PROJECTS", data);
+        
       },
       error: (err) => {
         console.error('Error fetching projects', err);
@@ -166,6 +171,8 @@ export class Form {
     this.empservices.getManagers().subscribe({
       next: (data) => {
         this.managers = data;
+        console.log("MANAGERS", data);
+        
       },
       error: (err) => {
         console.error('Error fetching managers', err);

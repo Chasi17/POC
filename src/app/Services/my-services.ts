@@ -14,19 +14,9 @@ export class MyServices {
   selectedTabIndex$ = new BehaviorSubject<number>(0)
   selectedEmployee$ = new BehaviorSubject<Employee | null>(null)
 
-
-
-  // getSelectedTabIndex() {
-  //   return this.selectedTabIndex$.asObservable()
-  // }
-
   getSelectedEmployee() {
     return this.selectedEmployee$.asObservable()
   }
-
-  // setSelectedTabIndex(value: number) {
-  //   this.selectedTabIndex$.next(value)
-  // }
 
   setSelectedEmployee(employee: Employee | null = null) {
     this.selectedEmployee$.next(employee)
@@ -59,5 +49,8 @@ getManagers(): Observable<string[]> {
   return this.http.get<string[]>(this.baseUrl + 'managers');
 }
 
+bulkAddEmployees(employees: any[]): Observable<any> {
+  return this.http.post(this.baseUrl + 'AddEmployees', employees);
+}
 
 };

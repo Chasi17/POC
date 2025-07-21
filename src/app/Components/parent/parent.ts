@@ -31,7 +31,6 @@ export class Parent implements OnInit {
   
   ngOnInit(): void {
     this.myService.getSelectedEmployee().subscribe((employee) => {
-      debugger
       if(employee){
         this.isAnyEmployeeSelected = true
         this.selectedEmployeeId = employee.empId

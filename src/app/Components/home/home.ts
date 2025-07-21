@@ -13,7 +13,7 @@ import { ExcelExportData } from "@progress/kendo-angular-excel-export";
 import { ExportServices } from '../../Services/export-services';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { DialogModule } from '@progress/kendo-angular-dialog';
-
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-home',
@@ -127,17 +127,6 @@ locations: string[] = [];
     this.displayModal = true;
   }
 
-  // allData(): ExcelExportData {
-
-  //   const result: ExcelExportData = {
-  //     data: process(this.gridData.data, {
-  //       sort: [{ field: "empId", dir: "asc" }],
-  //     }).data,
-  //   };
-  //   console.log(result);
-
-  //   return result;
-  // }
   
   requireSelectOrCtrlKeys: boolean = false;
 
@@ -221,4 +210,62 @@ onBulkEditSubmit() {
       alert("Bulk update failed. Please try again.");
     });
 }
+
+
+onImportExcel() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.xlsx';
+
+  input.onchange = async (e: any) => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (evt: any) => {
+      const data = new Uint8Array(evt.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+
+      const jsonData: any[] = XLSX.utils.sheet_to_json(worksheet);
+
+const employees = jsonData.map((row: any): any => ({
+  name: row["name"] || '',
+  email: row["email"] || '',
+  designation: row["designation"] || '',
+  reportingTo: (row["reportingTo"] || '').split(',').map((s: string) => s.trim()).filter((s: string) => s),
+  billable: (row["billable"] || '').toLowerCase() === 'yes',
+  skill: (row["skill"] || '').split(',').map((s: string) => s.trim()).filter((s: string) => s),
+  project: (row["project"] || '').split(',').map((s: string) => s.trim()).filter((s: string) => s),
+  location: row["location"] || '',
+  doj: row["doj"] ? new Date(row["doj"]).toISOString().split('T')[0] : null,
+  remarks: row["remarks"] || ''
+}));
+
+
+const transformedEmployees = employees.map(emp => ({
+  ...emp,
+  reportingTo: Array.isArray(emp.reportingTo) ? emp.reportingTo.join(', ') : '',
+  skill: Array.isArray(emp.skill) ? emp.skill.join(', ') : '',
+  project: Array.isArray(emp.project) ? emp.project.join(', ') : ''
+}));
+
+this.empService.bulkAddEmployees(transformedEmployees).subscribe(() => {
+        alert("Employees added successfully");
+        this.empService.getAll().subscribe((list: any) => {
+          this.userList = list;
+          this.loadGridData();
+        });
+      });
+    };
+
+    reader.readAsArrayBuffer(file);
+  };
+
+  input.click();
+}
+
 }
