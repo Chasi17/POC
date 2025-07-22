@@ -7,6 +7,7 @@ import { MapUserFormToResource } from '../../UtilityFunctions/utilityFunctions';
 import deepEqual from 'fast-deep-equal';
 import { Employee } from '../../Interface/Interface';
 import { HostListener } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -28,7 +29,8 @@ export class Form {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private empservices: MyServices
+    private empservices: MyServices,
+    private toastr: ToastrService
   ) { }
 
   designations: any[] = [];
@@ -51,10 +53,8 @@ export class Form {
 
 
   ngOnInit() {
-    debugger
 
     this.loadDropdowns();
-
 
     this.initForm();
 
@@ -89,8 +89,6 @@ export class Form {
           const { empId, ...rest } = emp;
           this.originalFormData = JSON.parse(JSON.stringify(rest));
 
-
-
           this.userform.patchValue(emp);
           debugger
           this.selectedProjects = emp.project;
@@ -102,6 +100,7 @@ export class Form {
         this.originalFormData = this.userform.value;
       }
     });
+    
   }
 
   private formatDateForInput(dateStr: string): string {
@@ -170,18 +169,6 @@ export class Form {
 
 
   initForm() {
-    // this.userform = this.fb.group({
-    //   name: ['', [Validators.required, Validators.minLength(4)]],
-    //   email: ['', [Validators.required, Validators.email]],
-    //   designation: ['', Validators.required],
-    //   reportingTo: ['', Validators.required],
-    //   billable: ['', Validators.required],
-    //   skill: ['', Validators.required],
-    //   project: ['', Validators.required],
-    //   location: ['', Validators.required],
-    //   doj: ['', Validators.required],
-    //   remarks: ['']
-    // });
 
     this.userform = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(4)]],
@@ -224,12 +211,21 @@ export class Form {
       console.log('request made');
 
       obs.subscribe((response) => {
-        debugger
+        this.toastr.success(`Employee ${this.isEditMode ? 'updated' : 'added'} successfully`, 'Success');
         console.log('response', response);
         this.userform.reset()
         this.router.navigate(['/home']);
+      },error => {
+    this.toastr.error('Failed to save employee', 'Error');
+    console.error(error);
       });
     }
+
+  if (!this.userform.valid) {
+  this.toastr.warning('Please fill in all required fields correctly', 'Validation Error');
+  return;
+}
+
 
     const formData = this.userform.value;
     formData.skill = (formData.skill || []).join(',');  // Comma-separated string
@@ -251,7 +247,7 @@ export class Form {
         this.selectedManagers = this.selectedManagers.filter(manager => this.originalFormData.reportingTo.includes(manager))
         this.selectedProjects = this.selectedProjects.filter(project => this.originalFormData.project.includes(project))
         this.userform.reset(this.originalFormData);
-        
+        this.toastr.info('Form reset', 'Info');
       } else {
         this.userform.get("skill")?.value
         this.userform.reset();
@@ -263,9 +259,6 @@ export class Form {
       }
     }
   }
-
-
-
 
   onSkillChange(event: Event): void {
     debugger
